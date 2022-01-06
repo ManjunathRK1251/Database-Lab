@@ -171,6 +171,8 @@ INSERT INTO IAMARKS (USN, SUBCODE, SSID, TEST1, TEST2, TEST3) VALUES ('1RN15CS04
 
 SELECT * FROM IAMARKS;
 
+/*List all the student details studying in fourth semester ‘C’section.*/
+
 
 SELECT S.*, SS.SEM, SS.SEC
 FROM STUDENT S, SEMSEC SS, CLASS C
@@ -178,19 +180,9 @@ WHERE S.USN = C.USN AND
 SS.SSID = C.SSID AND
 SS.SEM = 4 AND SS.SEC=’C’;
 
-SELECT SS.SEM, SS.SEC, S.GENDER, COUNT(S.GENDER) AS COUNT
-FROM STUDENT S, SEMSEC SS, CLASS C
-WHERE S.USN = C.USN AND
-SS.SSID = C.SSID
-GROUP BY SS.SEM, SS.SEC, S.GENDER
-ORDER BY SEM;
 
-
-SELECT S.*, SS.SEM, SS.SEC
-FROM STUDENT S, SEMSEC SS, CLASS C
-WHERE S.USN = C.USN AND
-SS.SSID = C.SSID AND
-SS.SEM = 4 AND SS.SEC='C';
+/*Compute the total number of male and female students in each semester and in 
+each section.*/
 
 SELECT SS.SEM, SS.SEC, S.GENDER, COUNT(S.GENDER) AS COUNT
 FROM STUDENT S, SEMSEC SS, CLASS C
@@ -198,6 +190,10 @@ WHERE S.USN = C.USN AND
 SS.SSID = C.SSID
 GROUP BY SS.SEM, SS.SEC, S.GENDER
 ORDER BY SEM;
+
+
+/*Create a view of Test1 marks of student USN ‘1BI15CS101’ in allsubjects.*/
+
 
 CREATE VIEW STU_TEST1_MARKS_VIEW
 AS
@@ -205,6 +201,11 @@ SELECT TEST1,SUBCODE
 FROM IAMARKS
 WHERE USN = '1RN13CS091';
 SELECT * FROM STU_TEST1_MARKS_VIEW;
+
+
+/*Calculate the FinalIA (average of best two test marks) andupdate the 
+corresponding table for allstudents*/
+
 
 update IAMARKS
 SET finalIA = (case
@@ -217,6 +218,13 @@ where finalIA is null;
 select * from IAMARKS;
 
 
+
+/*Categorize students based on thefollowingcriterion: 
+➢ If FinalIA = 17 to 20 thenCAT =‘Outstanding’
+➢ If FinalIA = 12 to 16 then CAT =‘Average’ 
+➢ If FinalIA< 12 then CAT =‘Weak’
+Give these details only for 8th semester A, B, and C section students.
+*/
 
 SELECT S.USN,S.SNAME,S.ADDRESS,S.PHONE,S.GENDER,SUB.SUBCODE,
 (CASE
