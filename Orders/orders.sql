@@ -18,7 +18,7 @@ CREATE TABLE CUSTOMER
     GRADE NUMERIC,
     PRIMARY KEY (CUSTOMERID),
     SALESMANID NUMERIC,
-    FOREIGN KEY (SALESMANID) REFERENCES SALESMAN(SALESMANID) ON DELETE SET NULL
+    FOREIGN KEY (SALESMANID) REFERENCES SALESMAN(SALESMANID) ON DELETE CASCADE;
 );
 DESC CUSTOMER;
 
@@ -30,7 +30,7 @@ CREATE TABLE ORDERS
     PRIMARY KEY(ORDNO),
     CUSTOMERID NUMERIC,
     FOREIGN KEY (CUSTOMERID) REFERENCES CUSTOMER(CUSTOMERID) ON DELETE CASCADE,
-    SALESMANID NUMERIC, FOREIGN KEY (SALESMANID) REFERENCES SALESMAN(SALESMANID) ON DELETE SET NULL
+    SALESMANID NUMERIC, FOREIGN KEY (SALESMANID) REFERENCES SALESMAN(SALESMANID) ON DELETE CASCADE
 );
 DESC ORDERS;
 
@@ -58,18 +58,18 @@ SELECT * FROM ORDERS;
 
 # Queries
 
-# Count the customers with grades above Bangalore’s average.
+-- Count the customers with grades above Bangalore’s average.
 SELECT GRADE,COUNT(DISTINCT CUSTOMERID)
 FROM CUSTOMER
 GROUP BY GRADE HAVING GRADE > ( SELECT AVG(GRADE) FROM CUSTOMER WHERE CITY='BANGALORE' );
 
-# Find the name and numbers of all salesmen who had more than one customer.
+-- Find the name and numbers of all salesmen who had more than one customer.
 SELECT SALESMANID, NAME
 FROM SALESMAN A
 WHERE 1 < (SELECT COUNT(*)
 FROM CUSTOMER WHERE SALESMANID=A.SALESMANID);
 
-# List all salesmen and indicate those who have and don’t have customers in their cities (Use UNION operation.)
+-- List all salesmen and indicate those who have and don’t have customers in their cities (Use UNION operation.)
 SELECT SALESMAN.SALESMANID, NAME,CUSTNAME,COMMISSION
 FROM SALESMAN,CUSTOMER
 WHERE SALESMAN.CITY=CUSTOMER.CITY
@@ -78,7 +78,7 @@ SELECT SALESMANID,NAME,'NO MATCH',COMMISSION
 FROM SALESMAN
 WHERE NOT CITY= ANY (SELECT CITY FROM CUSTOMER) ORDER BY 2 DESC;
 
-# Create a view that finds the salesman who has the customer with the highest order of a day.
+--  Create a view that finds the salesman who has the customer with the highest order of a day.
 CREATE VIEW ELITSALESMAN
 AS SELECT B.ORDDATE,A.SALESMANID,A.NAME
 FROM SALESMAN A,ORDERS B
@@ -88,7 +88,7 @@ B.PURCHASEAMT= (SELECT MAX(PURCHASEAMT) FROM ORDERS C WHERE C.ORDDATE=B.ORDDATE)
 
 SELECT * FROM ELITSALESMAN;
 
-# Demonstrate the DELETE operation by removing salesman with id 1000. All his orders must also be deleted.
+-- Demonstrate the DELETE operation by removing salesman with id 1000. All his orders must also be deleted.
 DELETE FROM SALESMAN
 WHERE SALESMANID=1000;
 
